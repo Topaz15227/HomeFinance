@@ -1,0 +1,29 @@
+<div  class="sum-list" *ngIf="dataSource">    
+  <mat-table class="sums-table  mat-elevation-z8" [dataSource]="dataSource">>
+      <ng-container matColumnDef="id">
+          <mat-header-cell *matHeaderCellDef>ID</mat-header-cell>
+          <mat-cell *matCellDef="let sum">{{ sum.id }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="cardName">
+          <mat-header-cell *matHeaderCellDef>Card Name</mat-header-cell>
+          <mat-cell class="sum-name-cell"  *matCellDef="let sum">{{sum.cardName}}</mat-cell>
+      </ng-container> 
+      <ng-container matColumnDef="numOfPays">
+          <mat-header-cell *matHeaderCellDef>Number of Pays</mat-header-cell>
+          <mat-cell class="sum-name-cell"  *matCellDef="let sum">{{sum.numOfPays}}</mat-cell>
+      </ng-container> 
+      <ng-container matColumnDef="total">
+          <mat-header-cell *matHeaderCellDef>Total</mat-header-cell>
+          <mat-cell class="sum-name-cell"  *matCellDef="let sum">{{sum.total | currency }}</mat-cell>
+      </ng-container> 		
+      <ng-container matColumnDef="activeTotal">
+          <mat-header-cell *matHeaderCellDef>Active Total</mat-header-cell>
+          <mat-cell class="active-cell" *matCellDef="let sum">{{sum.activeTotal | currency  }}</mat-cell>
+      </ng-container>
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  </mat-table>         
+</div>
+<div class="spinner-container" *ngIf="!dataSource">
+  <mat-spinner  diameter="35"></mat-spinner>
+</div>

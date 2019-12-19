@@ -1,0 +1,51 @@
+<div  *ngIf="card">
+    <mat-card class="card-card">
+        <mat-card-header>
+            <mat-card-title>Card Edit/View</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>    
+            <div class="table">
+                <div class="row">
+                    <div class="cell">Id:</div>
+                    <div class="cell">{{card.id}}</div>
+                </div>
+                <div class="row">
+                    <div class="cell">Card Name:</div>
+                    <div class="cell">
+                        <mat-form-field>
+                            <input matInput [(ngModel)]="card.cardName" placeholder="Card Name" >
+                        </mat-form-field>                
+                    </div>
+                </div>  
+                <div class="row">
+                    <div class="cell">Description:</div>
+                    <div class="cell">
+                        <mat-form-field>
+                            <input matInput [(ngModel)]="card.cardDescription" placeholder="Description" >
+                        </mat-form-field>                
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cell">Card Number:</div>
+                    <div class="cell">
+                        <mat-form-field>
+                            <input matInput [(ngModel)]="card.cardNumber" placeholder="Card Number" >
+                        </mat-form-field>                
+                    </div>
+                </div> 
+                <div class="row">
+                    <div class="cell">Active:</div>
+                    <div class="cell"><input [(ngModel)]="card.active" type="checkbox"/></div>
+                </div>
+                <div class="row">
+                    <div class="cell"></div>
+                </div>                    
+            </div>
+            <br>
+            <div>
+                <button (click)="goBack()">Go Back</button>&nbsp;&nbsp;
+                <button (click)="save()">Save</button>    
+            </div> 
+        </mat-card-content>
+    </mat-card>           
+</div>

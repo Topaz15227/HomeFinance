@@ -1,0 +1,89 @@
+<div  class="pay-card" *ngIf="pay && !inProcess">
+    <form [formGroup]="payForm" autocomplete="off" novalidate (ngSubmit)="savePay(payForm.value)">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Payment Edit/View</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="table">
+                    <div class="row">
+                        <div class="cell">Id:</div>
+                        <div class="cell">{{pay.id}}</div>
+                    </div>
+                    <div class="row">
+                        <div class="cell">Pay Date:&nbsp;&nbsp;</div>
+                        <div class="cell">
+                            <mat-form-field>
+                                <input matInput [matDatepicker]="dp" [value]="date" (focus)="dp.open()" placeholder="Choose a date" (dateChange)="selectedDate($event)"
+                                readonly>
+                                <mat-datepicker-toggle  matSuffix [for]="dp">
+                                    <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>                        
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #dp></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="cell">Card:</div>
+                        <div class="cell">
+                            <mat-form-field>
+                                <select matNativeControl (change)="changeCard($event.target.value)">
+                                    <option *ngFor="let card of cards" value={{card.id}} [selected]="card.id == pay.cardId">
+                                        {{card.cardName}}
+                                    </option>
+                                </select>   
+                            </mat-form-field>                        
+                        </div>
+                    </div>  
+                    <div class="row">
+                        <div class="cell">Store:</div>
+                        <div class="cell">
+                            <mat-form-field>
+                                <select matNativeControl (change)="changeStore($event.target.value)">
+                                    <option *ngFor="let store of stores" value={{store.id}} [selected]="store.id == pay.storeId">
+                                        {{store.storeName}}
+                                    </option>
+                                </select>   
+                            </mat-form-field>                             
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="cell">Amount:</div>
+                        <div class="cell">
+                            <mat-form-field>
+                                <input matInput formControlName="amount" placeholder="Amount" id="amount" >
+                                <mat-error *ngIf="hasError('amount', 'required')">Pay Amount is required</mat-error>
+                                <mat-error *ngIf="hasError('amount', 'pattern')">Invalid Amount</mat-error>
+                                <mat-error *ngIf="hasError('amount', 'notZero')">Should be Valuable Amount</mat-error>
+                            </mat-form-field>            
+                        </div>
+                    </div>  
+                    <div class="row">
+                        <div class="cell">Note:</div>
+                        <div class="cell">
+                            <mat-form-field>
+                                <input matInput formControlName="note" placeholder="Note" id="note">
+                                <mat-hint style="align-content: flex-end">Not more then 40 characters long.</mat-hint>
+                                <mat-error *ngIf="hasError('note', 'maxlength')">You have more than 40 characters</mat-error>                                 
+                            </mat-form-field>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="cell">Active:</div>
+                        <div class="cell"><input formControlName="active" type="checkbox" id="active"/></div>
+                    </div>                  
+                </div>
+            </mat-card-content>  
+            <mat-card-actions>
+                    <button type="submit">Save</button>&nbsp;&nbsp;                   
+                    <button (click)="goBack()">Go Back</button>
+            </mat-card-actions>                   
+        </mat-card>
+    </form>
+</div>
+<div class="spinner-container" *ngIf="inProcess">
+    <mat-spinner diameter="35"></mat-spinner>
+</div>
+
+
+

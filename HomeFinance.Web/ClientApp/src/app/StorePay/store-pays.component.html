@@ -1,0 +1,115 @@
+<div class="spinner-container" *ngIf="inProcess">
+  <mat-spinner diameter="35"></mat-spinner>
+</div>
+<div class="table">
+  <div class="row"  *ngIf="cardId>0 && cardPay">
+    <div class="cell"> &nbsp;</div><div class="cell"> &nbsp;</div>
+    <div class="cell" colspan="3" style="align-content: flex-end;">
+      <h5>
+        Total:&nbsp;&nbsp;{{cardPay.total | currency }}
+      </h5>
+    </div>
+  </div>
+  <div class="row" >
+    <div class="cell">
+      <mat-form-field>
+        <mat-label>Card:</mat-label>
+          <select matNativeControl (change)="changeCard($event.target.value)">
+              <option *ngFor="let card of cards" value={{card.id}} [selected]="card.id == 0">
+                  {{card.cardName}}
+              </option>
+          </select>   
+      </mat-form-field>
+    </div>
+    <div class="cell"> &nbsp;</div>
+    <div class="cell"  *ngIf="cardId==0"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+    <div class="cell" colspan="5">
+        <mat-card *ngIf="cardId==0 && cardPay">
+            <h4>Total:&nbsp;&nbsp;{{cardPay.total | currency }}</h4>
+        </mat-card>
+        <form *ngIf="cardPay && closingForm " [formGroup]="closingForm" autocomplete="off" novalidate (ngSubmit)="closePays(closingForm.value)">
+          <mat-card *ngIf="cardId>0 && cardPay.activeTotal>0" >
+              <mat-card-header>
+                <mat-card-title>Closing with amount &nbsp;&nbsp;<b>{{cardPay.activeTotal | currency }}</b></mat-card-title>
+              </mat-card-header> 
+              <mat-card-content>
+              <div class="table">
+                <div class="row" >
+                    <div class="cell">
+                        <mat-form-field>
+                            <input matInput [matDatepicker]="dp" [value]="date" (focus)="dp.open()" 
+                              placeholder="Closing Date" (dateChange)="selectedDate($event)" readonly>
+                            <mat-datepicker-toggle  matSuffix [for]="dp">
+                                <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>                        
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #dp></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                    <div class="cell"> &nbsp;</div>
+                    <div class="cell"> 
+                        <mat-form-field>
+                            <input matInput formControlName="closingName" placeholder="Closing Name" id="closingName">
+                            <mat-hint style="align-content: flex-end">Not more then 15 characters long.</mat-hint>
+                            <mat-error *ngIf="hasError('closingName', 'required')">Closing Name is required</mat-error>
+                            <mat-error *ngIf="hasError('closingName', 'maxlength')">You have more than 15 characters</mat-error>                             
+                        </mat-form-field>
+                    </div>
+                    <div class="cell"><button type="submit">Close Pay Period</button></div>                
+                </div>
+              </div>
+              </mat-card-content>
+            </mat-card>           
+        </form>     
+    </div>
+  </div>
+</div>
+<div class="spinner-container" *ngIf="dataSource.loading$ | async">
+  <mat-spinner diameter="35"></mat-spinner>
+</div>
+<div *ngIf="cardId==0">
+  <a class = "button" routerLink="/storepayedit/0"> 
+    New Pay
+  </a>
+</div>
+<div class="pay-list" *ngIf="dataSource">
+    <mat-table class="pays-table mat-elevation-z8" [dataSource]="dataSource"
+        matSort matSortActive="payDate" matSortDirection="desc" matSortDisableClear>
+        <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef>Id</mat-header-cell>
+            <mat-cell *matCellDef="let pay">
+              <div  *ngIf="cardId==0 else noLink">
+                <a routerLink="/storepayedit/{{pay.id}}">{{ pay.id }}</a>                
+              </div>
+              <ng-template #noLink>{{ pay.id }}</ng-template>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="payDate">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Pay Date</mat-header-cell>
+            <mat-cell class="pay-date-cell"  *matCellDef="let pay">{{pay.payDate | date:'MM/dd/yyyy' }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="cardName">
+            <mat-header-cell *matHeaderCellDef>Card Name</mat-header-cell>
+            <mat-cell class="card-name-cell"  *matCellDef="let pay">{{pay.cardName}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="storeName">
+            <mat-header-cell *matHeaderCellDef>Store Name</mat-header-cell>
+            <mat-cell class="store-name-cell"  *matCellDef="let pay">{{pay.storeName}}</mat-cell>
+        </ng-container> 
+        <ng-container matColumnDef="amount">
+            <mat-header-cell *matHeaderCellDef>Amount</mat-header-cell>
+            <mat-cell class="amount-cell"  *matCellDef="let pay">{{pay.amount | currency }}</mat-cell>
+        </ng-container>  
+        <ng-container matColumnDef="note">
+            <mat-header-cell *matHeaderCellDef>Note</mat-header-cell>
+            <mat-cell class="note-cell" *matCellDef="let pay">{{pay.note}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="active">
+            <mat-header-cell *matHeaderCellDef>Active</mat-header-cell>
+            <mat-cell class="active-cell" *matCellDef="let pay">{{pay.active  | yesNoBoolean}}</mat-cell>
+        </ng-container>                                    
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns" (click)="onRowClicked(row)"></mat-row>
+    </mat-table>
+    <mat-paginator [length]="cardPay?.numOfPays" [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 15]"></mat-paginator>           
+</div>

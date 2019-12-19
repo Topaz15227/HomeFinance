@@ -1,0 +1,9 @@
+<h5 mat-dialog-title>Error Message</h5>
+	<div mat-dialog-content>
+		<p *ngIf="data.errorStatus">Error Status: &nbsp;{{data.errorStatus}}</p>
+		<p> Method: &nbsp;{{data.method}}</p>
+		<p>{{data.errorMessage}}</p>
+    </div>
+	<div mat-dialog-actions>
+		<button mat-raised-button color="warn" (click)="closeDialog()">OK</button>
+    </div>

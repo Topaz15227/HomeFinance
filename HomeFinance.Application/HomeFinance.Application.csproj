@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="7.0.0" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.18" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HomeFinance.Domain\HomeFinance.Domain.csproj" />
+    <ProjectReference Include="..\HomeFinance.Persistence\HomeFinance.Persistence.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,56 @@
+<mat-form-field>
+<mat-label>Card:</mat-label>
+    <select matNativeControl (change)="changeCard($event.target.value)">
+        <option *ngFor="let card of cards" value={{card.id}} [selected]="card.id == 0">
+            {{card.cardName}}
+        </option>
+    </select>   
+</mat-form-field>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<mat-form-field>
+    <input matInput placeholder="Search" #input>
+</mat-form-field>
+<!-- <div  *ngIf="rowCount>0" class="pay-list"> -->
+<div  class="pay-list">    
+    <mat-table class="pays-table mat-elevation-z8" [dataSource]="dataSource"
+            matSort matSortActive="id" matSortDirection="desc" matSortDisableClear>
+        <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
+            <mat-cell *matCellDef="let pay">{{ pay.id }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="payDate">
+            <mat-header-cell *matHeaderCellDef>Pay Date</mat-header-cell>
+            <mat-cell class="pay-date-cell"  *matCellDef="let pay">{{pay.payDate | date:'MM/dd/yyyy' }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="cardName">
+            <mat-header-cell *matHeaderCellDef>Card Name</mat-header-cell>
+            <mat-cell class="card-name-cell"  *matCellDef="let pay">{{pay.cardName}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="storeName">
+            <mat-header-cell *matHeaderCellDef>Store Name</mat-header-cell>
+            <mat-cell class="store-name-cell"  *matCellDef="let pay">{{pay.storeName}}</mat-cell>
+        </ng-container> 
+        <ng-container matColumnDef="amount">
+            <mat-header-cell *matHeaderCellDef>Amount</mat-header-cell>
+            <mat-cell class="amount-cell"  *matCellDef="let pay">{{pay.amount | currency }}</mat-cell>
+        </ng-container>  
+        <ng-container matColumnDef="note">
+            <mat-header-cell *matHeaderCellDef>Note</mat-header-cell>
+            <mat-cell class="note-cell" *matCellDef="let pay">{{pay.note}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="closingDate">
+            <mat-header-cell *matHeaderCellDef>Closing Date</mat-header-cell>
+            <mat-cell class="closing-date-cell"  *matCellDef="let pay">{{pay.closingDate | date:'MM/dd/yyyy' }}</mat-cell>
+        </ng-container>		
+        <ng-container matColumnDef="closingId">
+            <mat-header-cell *matHeaderCellDef>CID</mat-header-cell>
+            <mat-cell class="active-cell" *matCellDef="let pay">{{pay.closingId}}</mat-cell>
+        </ng-container>                                    
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns" (click)="onRowClicked(row)"></mat-row>
+    </mat-table>    
+    <mat-paginator  #paginator [length]="rowCount" [pageSize]="10" [pageSizeOptions]="[5, 10, 15]"></mat-paginator>      
+</div>
+<div class="spinner-container" *ngIf="dataSource.loading$ | async">
+    <mat-spinner  diameter="35"></mat-spinner>
+</div>

@@ -1,0 +1,108 @@
+<div *ngIf="!showEdit">
+    <button matButton (click)="createCard()" class="link">New Card</button>        
+</div>
+<div  *ngIf="card && showEdit">
+    <form [formGroup]="cardForm" autocomplete="off" novalidate (ngSubmit)="saveCard(cardForm.value)">
+      <mat-card class="card-card">
+        <mat-card-header>
+            <mat-card-title>Card Edit/View</mat-card-title>
+        </mat-card-header>      
+        <mat-card-content> 
+            <div class="table">
+                <div class="row" >
+                    <div class="cell">Id:</div>
+                    <div class="cell">{{card.id}}</div>
+                </div>
+                <div class="row" >
+                    <div class="cell">Card Name:</div>
+                    <div class="cell">
+                        <mat-form-field>
+                            <input matInput formControlName="cardName" placeholder="Card Name" id="cardName">
+                            <mat-hint style="align-content: flex-end">Not more then 15 characters long.</mat-hint>
+                            <mat-error *ngIf="hasError('cardName', 'required')">Card Name is required</mat-error>
+                            <mat-error *ngIf="hasError('cardName', 'maxlength')">You have more than 15 characters</mat-error>                             
+                        </mat-form-field>                
+                    </div>
+                </div>  
+                <div class="row" >
+                    <div class="cell">Description:</div>
+                    <div class="cell">
+                        <mat-form-field>
+                            <input matInput formControlName="cardDescription" placeholder="Description" id="cardDescription">
+                            <mat-hint style="align-content: flex-end">Not more then 25 characters long.</mat-hint>
+                            <mat-error *ngIf="hasError('cardDescription', 'required')">Card Description is required</mat-error>
+                            <mat-error *ngIf="hasError('cardDescription', 'maxlength')">You have more than 25 characters</mat-error>                             
+                        </mat-form-field>                
+                    </div>
+                </div>
+                <div class="row" >
+                    <div class="cell">Card Number:</div>
+                    <div class="cell">
+                        <mat-form-field>
+                            <input matInput formControlName="cardNumber" placeholder="Card Number" id="cardNumber" >
+                            <mat-hint style="align-content: flex-end">Not more then 20 characters long.</mat-hint>
+                            <mat-error *ngIf="hasError('cardNumber', 'required')">Card Number is required</mat-error>
+                            <mat-error *ngIf="hasError('cardNumber', 'maxlength')">You have more than 20 characters</mat-error> 
+                        </mat-form-field>                
+                    </div>
+                </div>
+                <div class="row" >
+                    <div class="cell">Closing Name:</div>
+                    <div class="cell">
+                        <mat-form-field>
+                            <input matInput formControlName="closingName" placeholder="Closing Name" id="closingName" >
+                            <mat-hint style="align-content: flex-end">Not more then 3 characters long.</mat-hint>
+                            <mat-error *ngIf="hasError('closingName', 'required')">Closing Name is required</mat-error>
+                            <mat-error *ngIf="hasError('closingName', 'maxlength')">You have more than 3 characters</mat-error> 
+                        </mat-form-field>                
+                    </div>
+                </div>                  
+                <div class="row" >
+                    <div class="cell">Active:</div>
+                    <div class="cell"><input formControlName="active" type="checkbox" id="active"/></div>
+                </div>                   
+              </div>
+          </mat-card-content>            
+          <mat-card-actions class ="action"> 
+            <button >Save</button>&nbsp;&nbsp;&nbsp;&nbsp;
+            <button (click)="close()">Close</button>
+          </mat-card-actions>
+    </mat-card>      
+  </form>
+  <br />  
+</div>
+<div  class="card-list" *ngIf="dataSource">    
+  <mat-table class="cards-table  mat-elevation-z8" [dataSource]="dataSource">
+      <ng-container matColumnDef="id">
+          <mat-header-cell *matHeaderCellDef>ID</mat-header-cell>
+          <mat-cell *matCellDef="let card" (click)="viewEdit(card)" class="link">
+                {{ card.id }}
+          </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="cardName">
+          <mat-header-cell *matHeaderCellDef>Card Name</mat-header-cell>
+          <mat-cell class="card-name-cell"  *matCellDef="let card">{{card.cardName}}</mat-cell>
+      </ng-container> 
+      <ng-container matColumnDef="cardDescription">
+          <mat-header-cell *matHeaderCellDef>Description</mat-header-cell>
+          <mat-cell class="card-name-cell"  *matCellDef="let card">{{card.cardDescription}}</mat-cell>
+      </ng-container> 
+      <ng-container matColumnDef="cardNumber">
+          <mat-header-cell *matHeaderCellDef>Card Number</mat-header-cell>
+          <mat-cell class="card-name-cell"  *matCellDef="let card">{{card.cardNumber}}</mat-cell>
+      </ng-container> 
+      <ng-container matColumnDef="closingName">
+        <mat-header-cell *matHeaderCellDef>Closing Name</mat-header-cell>
+        <mat-cell class="card-name-cell"  *matCellDef="let card">{{card.closingName}}</mat-cell>
+    </ng-container>       		
+      <ng-container matColumnDef="active">
+          <mat-header-cell *matHeaderCellDef>Active</mat-header-cell>
+          <mat-cell class="active-cell" *matCellDef="let card">{{card.active  | yesNoBoolean }}</mat-cell>
+      </ng-container>
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  </mat-table>         
+</div>
+<div class="spinner-container" *ngIf="waiting">
+  <mat-spinner diameter="35"></mat-spinner>
+</div>
