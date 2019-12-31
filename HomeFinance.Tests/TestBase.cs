@@ -7,7 +7,7 @@ namespace HomeFinance.Application.Tests
     {
         public HomeFinanceDbContext GetDbContext()
         {
-            var dbContext = HomeFinanceDbContextFactory.CreateAsync("VVAppTests").Result;
+            var dbContext = HomeFinanceDbContextFactory.CreateAsync("HFTests").Result;
 
             return dbContext;
         }

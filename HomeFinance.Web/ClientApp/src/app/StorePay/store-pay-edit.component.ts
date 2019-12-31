@@ -21,6 +21,7 @@ export class StorePayEditComponent implements OnInit {
   stores: StoreItem[];
   date: Date;
   inProcess: Boolean;
+  loading: Boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -29,7 +30,7 @@ export class StorePayEditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.inProcess=true;
+    this.loading=true;
     this.getStorePay();
     this.getCardList();
     this.getStoreList();
@@ -42,7 +43,7 @@ export class StorePayEditComponent implements OnInit {
       this.pay = new StorePay();
       this.pay.id = 0;
       this.pay.cardId=1;
-      this.pay.storeId=1;//8;
+      this.pay.storeId=1;
       this.date=new Date();
       this.pay.payDate=this.date;
      // this.pay.amount=0;
@@ -63,12 +64,13 @@ export class StorePayEditComponent implements OnInit {
   setForm(pay){
     this.payForm= new FormGroup(
       {
-        amount: new FormControl(pay.amount, [Validators.required,  Validators.pattern(/^[+\-]?([0-9]+(?:[\.][0-9]*)?|\.[0-9]+)$/), this.notZero]),
+        amount: new FormControl(pay.amount, [Validators.required,  
+          Validators.pattern(/^[+\-]?([0-9]+(?:[\.][0-9]*)?|\.[0-9]+)$/), this.notZero, this.isValid]),
         note: new FormControl(pay.note, [Validators.maxLength(40)]),
         active: new FormControl(pay.active)
       }
     );
-    this.inProcess=false;
+    this.loading=false;
   }
 
   getCardList(): void {
@@ -82,37 +84,50 @@ export class StorePayEditComponent implements OnInit {
   }
 
   goBack(): void {
-    this.location.back(); 
+      this.inProcess = false;
+      this.location.back(); 
   }
 
   savePay(payFormValue): void {
     if(this.payForm.valid){
-      this.pay.amount=payFormValue.amount;
+      this.inProcess = true;
+
+      this.pay.amount=parseFloat(payFormValue.amount);
       this.pay.note=payFormValue.note;
       this.pay.active=payFormValue.active;
 
       if(this.pay.id == 0){
         this.storePayService.addStorePay(this.pay)
-          .subscribe(() => this.location.back());
+        .subscribe(
+          res =>  
+          {
+            if(res != undefined){
+              this.goBack();
+            } 
+          }); 
       }
       else {
         this.storePayService.updateStorePay(this.pay)
-          .subscribe(() => this.location.back());
+        .subscribe(
+          res =>  
+          {
+            if(res != undefined){
+              this.goBack();
+            } 
+          }); 
       }     
     }
-
   }
 
   changeCard(id) {
-    this.pay.cardId = id;
+    this.pay.cardId = parseInt(id);
   }
 
   changeStore(id) {
-    this.pay.storeId = id;
+    this.pay.storeId = parseInt(id);
   }
 
   selectedDate(event: MatDatepickerInputEvent<Date>) {
-    //console.log(`date: ${event.value}`);
     this.pay.payDate = event.value;
   }
 
@@ -122,6 +137,15 @@ export class StorePayEditComponent implements OnInit {
 
   notZero(control: FormControl){
     return control.value != '0' ? null : {notZero: true}
+  }
+
+  isValid(control: FormControl){
+    let s = control.value ? control.value.toString() : '';
+    let ind = s.indexOf('.');
+
+    let pres = ind >= 0 ? s.length - ind - 1 : 0;
+
+    return pres > 2 ? {isValid: true} : null;
   }
 
 }

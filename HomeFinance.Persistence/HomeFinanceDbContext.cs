@@ -46,11 +46,11 @@ namespace HomeFinance.Persistence
 
         public DbSet<Closing> Closings { get; set; }
 
-        public DbQuery<ViewStorePays> ViewStorePays { get; set; }
+        public DbSet<ViewStorePays> ViewStorePays { get; set; }
 
-        public DbQuery<ViewCardPays> ViewCardPays { get; set; }
+        public DbSet<ViewCardPays> ViewCardPays { get; set; }
 
-        public DbQuery<ViewClosings> ViewClosings { get; set; }
+        public DbSet<ViewClosings> ViewClosings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

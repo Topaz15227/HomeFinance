@@ -53,19 +53,3 @@ FROM StorePays sp
 	LEFT JOIN Closings cl on sp.ClosingId = cl.Id
 GO
 -----------------------------------------------
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE view [dbo].[ViewSummary]
-as
-SELECT c.Id,c.CardName,
-(select isnull(SUM(sp.Amount),0) from StorePays sp where sp.CardId=c.Id and sp.ClosingId is null) as Total,
-(select isnull(SUM(sp.Amount),0) from StorePays sp where sp.CardId=c.Id and sp.ClosingId is null and sp.Active=1) as ActiveTotal
-FROM Cards c
-WHERE c.Active = 1
-GO
---------------------------------------

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using MediatR.Pipeline;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -29,17 +29,21 @@ namespace HomeFinance.Web
         public void ConfigureServices(IServiceCollection services)
         {
 
+            //nc2.2
+            //services
+            //.AddMvc();
+            //.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            //.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<GetUserInfoByUserNameQueryValidator>());
 
-            services
-                .AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-                //.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<GetUserInfoByUserNameQueryValidator>());
-            ;           
+            services.AddControllersWithViews();
 
             // Add MediatR
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>));
+
             //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>));
+
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
+
             services.AddMediatR(typeof(GetCardsQueryHandler).GetTypeInfo().Assembly);
 
             services.AddDbContext<HomeFinanceDbContext>(options =>
@@ -53,7 +57,7 @@ namespace HomeFinance.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
@@ -87,12 +91,24 @@ namespace HomeFinance.Web
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
-            app.UseMvc(routes =>
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
+                    pattern: "{controller}/{action=Index}/{id?}");
             });
+
+            //nc2.2
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "default",
+            //        template: "{controller}/{action=Index}/{id?}");
+            //});
+
+
 
             app.UseSpa(spa =>
             {

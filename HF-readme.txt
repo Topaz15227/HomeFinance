@@ -1,32 +1,30 @@
 Home Finance 
-	- credit cards store payment management (store pays)
+	- credit cards store payment management (Store Pays)
 
-	It's Net Core 2.2 / Angular 8 application against SQL Server database
-
+	It's Net Core 3.1 / Angular 8 application against SQL Server database
+	(Originally was created in NetCore 2.2, then it was converted to higher version)
 
 1. Set/Verify DB connection (appsettings.json: Server=?)
 
-2. Run the application 
-	- it creates DB and shows error message
-	
-3. Create views using script: Data/HF-Views-Create.sql
+2. Make sure that next lines in Startup.cs (~ line 64) are uncommented:
 
-4. Refresh browser window
-	- the application should work
-	
-5. Input a few Store Pay records using first card,
-	select the same card in a list, then closing box appeared
-	
-	"Close Pay Period" button click closes payment period for selected
-	card' active pays
-	
-	After that there will be records in a Closing and 
-	Archive screens
-	
-6.  To suppress the DB recreation, comment the next lines in Startup.cs (~ line 64):
+			context.Database.EnsureDeleted();
+            context.Database.Migrate();        [*]
 
-	context.Database.EnsureDeleted();
-	context.Database.Migrate(); //create views and refresh application
+3. Run the application
+	- it creates DB, tables and views
+	
+4. Input a few Store Pay records using first card, then:
+
+	- select the same card in a list, the closing box appeares
+	
+	- press "Close Pay Period" button ,it closes payment period for selected
+	card' active pay records
+	
+	- verify that there will be the records in a Closing and Archive screens
+	
+5.  To suppress the DB recreation, comment [*] lines in Startup.cs (~ line 64):
+
 
 
 Resources used:

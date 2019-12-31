@@ -11,7 +11,7 @@ namespace HomeFinance.Application.Tests.Infrastructure
 {
     public class HomeFinanceDbContextFactory
     {
-        public static async Task<HomeFinanceDbContext> CreateAsync(string dbName = null, bool superUser = true, string tenantIds = "1")
+        public static async Task<HomeFinanceDbContext> CreateAsync(string dbName = null)
         {
             var connection = new Microsoft.Data.Sqlite.SqliteConnection("DataSource=:memory:");
             connection.Open();
@@ -84,9 +84,9 @@ namespace HomeFinance.Application.Tests.Infrastructure
 
             r = _context.SaveChangesAsync().Result;
 
-            _context.Database.ExecuteSqlCommand(@"
-CREATE view ViewStorePays
-as
+            _context.Database.ExecuteSqlRaw(@"
+INSERT INTO ViewStorePays (Id, CardName, PayDate, StoreName, Amount, Note,
+    ClosingDate, Active, CardId, StoreId, ClosingId)
 SELECT sp.Id, c.CardName,sp.PayDate, s.StoreName, sp.Amount, sp.Note,
 	cl.ClosingDate, sp.Active, sp.CardId, sp.StoreId, sp.ClosingId
 FROM StorePays sp
@@ -95,27 +95,15 @@ FROM StorePays sp
 	LEFT JOIN Closings cl on sp.ClosingId = cl.Id"
 );
 
-//            _context.Database.ExecuteSqlCommand(@"
-//CREATE view ViewCardPays
-//as
-//SELECT c.Id,c.CardName,
-//(select ifnull(SUM(sp.Amount),0) from StorePays sp where sp.CardId=c.Id and sp.ClosingId is null) as Total,
-//(select ifnull(SUM(sp.Amount),0) from StorePays sp where sp.CardId=c.Id and sp.ClosingId is null and sp.Active=1) as ActiveTotal
-//FROM Cards c
-//WHERE c.Active = 1"
-//);
-
-            _context.Database.ExecuteSqlCommand(@"
-CREATE view ViewClosings
-as
+            _context.Database.ExecuteSqlRaw(@"
+INSERT INTO  ViewClosings(Id, CardName, ClosingDate, ClosingName, ClosingAmount, CardId)
 SELECT cl.Id, c.CardName, cl.ClosingDate, cl.ClosingName, cl.ClosingAmount, cl.CardId
 FROM Closings cl
-	LEFT JOIN Cards c on cl.CardId = c.Id"
+    LEFT JOIN Cards c on cl.CardId = c.Id"
 );
 
-            _context.Database.ExecuteSqlCommand(@"
-CREATE view ViewCardPays
-as
+            _context.Database.ExecuteSqlRaw(@"
+INSERT INTO  ViewCardPays (Id, CardName, NumOfPays, Total, ActiveTotal)
 SELECT 0 as Id, 'All' as CardName,
 (select Count(Id) from StorePays where ClosingId is null) as NumOfPays,
 (select ifnull(SUM(Amount),0) from StorePays where ClosingId is null) as Total,

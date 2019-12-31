@@ -75,7 +75,7 @@ export class StorePaysComponent implements AfterViewInit,  OnInit {
 
   changeCard(id) {
     this.inProcess = true;
-    this.cardId = id;
+    this.cardId = parseInt(id);
     this.getCardPay(); 
 
     if(id > 0){

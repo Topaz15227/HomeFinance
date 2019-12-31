@@ -42,7 +42,7 @@ export class CardService {
 
   updateCard (card: Card): Observable<any> {
     const id = card.id;
-    const url = `${this.cardUrl}/${id}`;
+    const url = `${this.cardUrl}xxx/${id}`;
       return this.http.put(url, card, this.httpOptions).pipe(    
       catchError(this.errorService.handleError<any>(`updateCard id=${id}`))
     );
