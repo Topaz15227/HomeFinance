@@ -1,7 +1,7 @@
 # HomeFinance
 Credit Cards Payments
 
-Main purpose for creation: practise in Angular.
+Main purpose for creation: practice in Angular.
 
 It's Net Core 3.1 / Angular 8 application against SQL Server database
 (Originally was created in NetCore 2.2, then it was converted to higher version)
